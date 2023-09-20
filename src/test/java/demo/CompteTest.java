@@ -10,22 +10,24 @@ class CompteTest {
 
     @Test
     void crediterCompte() {
-        Compte c1 = new Compte(1010, new Personne("Bigard","JM"),1000);
+        Personne JM = new Personne("Bigard","JM");
+        Compte c1 = new Compte(1010, JM,1000F);
 
-        Compte expected = new Compte(1010,new Personne("Bigard","JM"),3000);
+        Compte expected = new Compte(1010,JM,3000F);
 
-        c1.crediterCompte(2000);
+        c1.crediterCompte(2000F);
 
         assertEquals(expected,c1);
     }
 
     @Test
     void debiterCompte() {
-        Compte c1 = new Compte(1010, new Personne("Bigard","JM"),3000);
+        Personne JM = new Personne("Bigard","JM");
+        Compte c1 = new Compte(1010, JM,3000F);
 
-        Compte expected = new Compte(1010,new Personne("Bigard","JM"),1000);
+        Compte expected = new Compte(1010,JM,1000F);
 
-        c1.debiterCompte(2000);
+        c1.debiterCompte(2000F);
 
         assertEquals(expected,c1);
     }
@@ -36,13 +38,15 @@ class CompteTest {
 
     @Test
     void virementCompte() {
-        Compte c1 = new Compte(1010, new Personne("Bigard","JM"),2000);
-        Compte c2 = new Compte(1011, new Personne("Melanchon","JL"),1000);
+        Personne JM = new Personne("Bigard","JM");
+        Personne JL = new Personne("Melanchon","JL");
+        Compte c1 = new Compte(1010, JM,2000F);
+        Compte c2 = new Compte(1011, JL,1000F);
 
-        Compte expected = new Compte(1010,new Personne("Bigard","JM"),1000);
-        Compte expected2 = new Compte(1011,new Personne("Melanchon","JL"),2000);
+        Compte expected = new Compte(1010,JM,1000F);
+        Compte expected2 = new Compte(1011,JL,2000F);
 
-        c1.virementCompte(c2,1000);
+        c1.virementCompte(c2,1000F);
 
         assertEquals(expected,c1);
         assertEquals(expected2,c2);

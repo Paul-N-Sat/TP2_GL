@@ -31,7 +31,7 @@ public class Compte {
         this.retrait=0;
     }
 
-    public Compte(Personne titulaire, int depotInitial){
+    public Compte(Personne titulaire, float depotInitial){
         this.titulaire=titulaire;
         this.numeroCompte= rand.nextInt();
         this.soldeCompte=depotInitial;
@@ -41,7 +41,7 @@ public class Compte {
         this.devise="Euros";
         this.retrait = 0;
     }
-    public Compte(int numeroCompte, Personne titulaire, int depotInitial){
+    public Compte(int numeroCompte, Personne titulaire, float depotInitial){
         this.titulaire=titulaire;
         this.numeroCompte= numeroCompte;
         this.soldeCompte=depotInitial;
