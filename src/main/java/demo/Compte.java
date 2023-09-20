@@ -1,10 +1,12 @@
 package demo;
 
+import java.util.Objects;
 import java.util.Random;
 
 import static java.lang.Math.abs;
 
 public class Compte {
+
     int numeroCompte;
     Personne titulaire;
 
@@ -32,6 +34,16 @@ public class Compte {
     public Compte(Personne titulaire, int depotInitial){
         this.titulaire=titulaire;
         this.numeroCompte= rand.nextInt();
+        this.soldeCompte=depotInitial;
+        this.decouvert=0;
+        this.decouvertMax=800;
+        this.debitMax=1000;
+        this.devise="Euros";
+        this.retrait = 0;
+    }
+    public Compte(int numeroCompte, Personne titulaire, int depotInitial){
+        this.titulaire=titulaire;
+        this.numeroCompte= numeroCompte;
         this.soldeCompte=depotInitial;
         this.decouvert=0;
         this.decouvertMax=800;
@@ -85,6 +97,7 @@ public class Compte {
     }
 
     public void crediterCompte(float sommeACrediter){
+        if(sommeACrediter < 0) throw new IllegalArgumentException();
         this.soldeCompte += sommeACrediter;
     }
 
@@ -93,6 +106,7 @@ public class Compte {
         return abs(testSolde) > decouvertMax && testSolde < 0;
     }
     public void debiterCompte(float sommeADebiter){
+        if(sommeADebiter < 0) throw new IllegalArgumentException();
         if (estADecouvert(sommeADebiter)){
             this.soldeCompte -= sommeADebiter;
         }else{
@@ -110,12 +124,26 @@ public class Compte {
         }
     }
 
-    public void virementCompte(Compte compte,float somme){
-        if(estADecouvert(somme)){
+    public void virementCompte(Compte compte,float somme) throws IllegalArgumentException{
+        if(somme < 0) throw new IllegalArgumentException();
+        if(estADecouvert(somme))
+        {
             debiterCompte(somme);
             crediterCompte(somme);
-        }else{
+        } else {
             System.out.println("Solde insuffisant!");
         }
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Compte compte = (Compte) o;
+        return numeroCompte == compte.numeroCompte && Float.compare(compte.soldeCompte, soldeCompte) == 0 && Float.compare(compte.decouvert, decouvert) == 0 && Float.compare(compte.decouvertMax, decouvertMax) == 0 && Float.compare(compte.retrait, retrait) == 0 && Float.compare(compte.debitMax, debitMax) == 0 && Objects.equals(titulaire, compte.titulaire) && Objects.equals(devise, compte.devise) && Objects.equals(rand, compte.rand);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numeroCompte, titulaire, soldeCompte, decouvert, decouvertMax, retrait, debitMax, devise, rand);
     }
 }
