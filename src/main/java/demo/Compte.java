@@ -19,10 +19,10 @@ public class Compte {
     float debitMax;
     String devise;
 
-    Random rand = new Random();
+    static int numeroCompteIncr =1;
     public Compte(Personne titulaire){
         this.titulaire=titulaire;
-        this.numeroCompte= rand.nextInt();
+        this.numeroCompte += 1;
         this.soldeCompte=0;
         this.decouvert=0;
         this.decouvertMax=800;
@@ -33,8 +33,9 @@ public class Compte {
 
     public Compte(Personne titulaire, float depotInitial){
         this.titulaire=titulaire;
-        this.numeroCompte= rand.nextInt();
-        this.soldeCompte=depotInitial;
+        this.numeroCompte =GestiondeCompte.numeroCompte + 1;
+        GestiondeCompte.numeroCompte ++;
+        if(depotInitial>=0){this.soldeCompte=depotInitial;}else throw new IllegalArgumentException();
         this.decouvert=0;
         this.decouvertMax=800;
         this.debitMax=1000;
@@ -43,7 +44,7 @@ public class Compte {
     }
     public Compte(int numeroCompte, Personne titulaire, float depotInitial){
         this.titulaire=titulaire;
-        this.numeroCompte= numeroCompte;
+        this.numeroCompte = numeroCompte;
         this.soldeCompte=depotInitial;
         this.decouvert=0;
         this.decouvertMax=800;
@@ -97,7 +98,7 @@ public class Compte {
     }
 
     public void crediterCompte(float sommeACrediter){
-        if(sommeACrediter < 0) throw new IllegalArgumentException();
+        if(sommeACrediter < 0F) throw new IllegalArgumentException();
         this.soldeCompte += sommeACrediter;
     }
 
@@ -107,43 +108,45 @@ public class Compte {
     }
     public void debiterCompte(float sommeADebiter){
         if(sommeADebiter < 0) throw new IllegalArgumentException();
-        if (estADecouvert(sommeADebiter)){
+        if (!estADecouvert(sommeADebiter) && sommeADebiter+retrait<debitMax){
             this.soldeCompte -= sommeADebiter;
-        }else{
-            System.out.println("T'es pauvre mon reuf!");
-        }
+            this.retrait += sommeADebiter;
+        }else throw new IllegalArgumentException();
     }
 
-    public void retraitCompte(float retrait){
-        float testDebit = this.retrait + retrait;
-        if(testDebit<debitMax && estADecouvert(retrait)){
-            this.retrait = testDebit;
-            this.soldeCompte -= retrait;
-        }else{
-            System.out.println("Solde insuffisant!");
-        }
-    }
 
     public void virementCompte(Compte compte,float somme) throws IllegalArgumentException{
         if(somme < 0) throw new IllegalArgumentException();
-        if(estADecouvert(somme))
+        if(!estADecouvert(somme))
         {
             debiterCompte(somme);
-            crediterCompte(somme);
-        } else {
-            System.out.println("Solde insuffisant!");
-        }
+            compte.crediterCompte(somme);
+        } else throw new IllegalArgumentException();
     }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Compte compte = (Compte) o;
-        return numeroCompte == compte.numeroCompte && Float.compare(compte.soldeCompte, soldeCompte) == 0 && Float.compare(compte.decouvert, decouvert) == 0 && Float.compare(compte.decouvertMax, decouvertMax) == 0 && Float.compare(compte.retrait, retrait) == 0 && Float.compare(compte.debitMax, debitMax) == 0 && Objects.equals(titulaire, compte.titulaire) && Objects.equals(devise, compte.devise) && Objects.equals(rand, compte.rand);
+        return Float.compare(compte.soldeCompte, soldeCompte) == 0 && Float.compare(compte.decouvert, decouvert) == 0 && Float.compare(compte.decouvertMax, decouvertMax) == 0  && Float.compare(compte.debitMax, debitMax) == 0 && Objects.equals(titulaire, compte.titulaire) && Objects.equals(devise, compte.devise);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(numeroCompte, titulaire, soldeCompte, decouvert, decouvertMax, retrait, debitMax, devise, rand);
+        return Objects.hash(titulaire, soldeCompte, decouvert, decouvertMax, retrait, debitMax, devise);
+    }
+
+    @Override
+    public String toString() {
+        return "Compte{" +
+                "numeroCompte=" + numeroCompte +
+                ", titulaire=" + titulaire +
+                ", soldeCompte=" + soldeCompte +
+                ", decouvert=" + decouvert +
+                ", decouvertMax=" + decouvertMax +
+                ", retrait=" + retrait +
+                ", debitMax=" + debitMax +
+                ", devise='" + devise + '\'' +
+                '}';
     }
 }
